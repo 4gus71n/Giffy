@@ -1,0 +1,12 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:id="@+id/loading_tv" android:oneshot="false" >
+    <item android:drawable="@drawable/tv_loading1" android:duration="100"/>
+    <item android:drawable="@drawable/tv_loading2" android:duration="100"/>
+    <item android:drawable="@drawable/tv_loading3" android:duration="100"/>
+    <item android:drawable="@drawable/tv_loading4" android:duration="100"/>
+    <item android:drawable="@drawable/tv_loading5" android:duration="100"/>
+    <item android:drawable="@drawable/tv_loading6" android:duration="100"/>
+    <item android:drawable="@drawable/tv_loading7" android:duration="100"/>
+    <item android:drawable="@drawable/tv_loading8" android:duration="100"/>
+    <item android:drawable="@drawable/tv_loading9" android:duration="100"/>
+</animation-list>

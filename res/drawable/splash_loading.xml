@@ -1,0 +1,15 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:id="@+id/selected" android:oneshot="false" >
+    <item android:drawable="@drawable/tv_splash_12" android:duration="200"/>
+    <item android:drawable="@drawable/tv_splash_11" android:duration="200"/>
+    <item android:drawable="@drawable/tv_splash_10" android:duration="200"/>
+    <item android:drawable="@drawable/tv_splash_9" android:duration="200"/>
+    <item android:drawable="@drawable/tv_splash_8" android:duration="200"/>
+    <item android:drawable="@drawable/tv_splash_7" android:duration="200"/>
+    <item android:drawable="@drawable/tv_splash_6" android:duration="200"/>
+    <item android:drawable="@drawable/tv_splash_5" android:duration="200"/>
+    <item android:drawable="@drawable/tv_splash_4" android:duration="200"/>
+    <item android:drawable="@drawable/tv_splash_3" android:duration="200"/>
+    <item android:drawable="@drawable/tv_splash_2" android:duration="200"/>
+    <item android:drawable="@drawable/tv_splash_1" android:duration="200"/>
+</animation-list>
