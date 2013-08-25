@@ -7,5 +7,14 @@
     <string name="title_activity_navigation">NavigationActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="splash_loading">Cargando...</string>
+    <string name="splash_init_session">Iniciar sesión</string>
+    <string name="splash_email_hint">Correo electronico</string>
+    <string name="splash_password_hint">Contraseña</string>
+    <string name="splash_init_session_btn">Entrar!</string>
+    <string name="splash_init_anonymous_btn">Entrar como invitado!</string>
+    <string name="splash_faq_frame_title">¿Porque me pide logearme?</string>
+    <string name="splash_faq_frame_text">Porque para descargar nuevos gif de paginas como Tumblr, nuestra aplicacion necesita autentificarse.</string>
+    <string name="splash_about_frame_title">Acerca de nosotros</string>
 
 </resources>

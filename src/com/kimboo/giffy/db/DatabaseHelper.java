@@ -13,6 +13,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.kimboo.giffy.R;
 import com.kimboo.giffy.model.Gif;
+import com.kimboo.giffy.model.GifFrame;
 
 /**
  * Database helper class used to manage the creation and upgrading of your database. This class also usually provides
@@ -23,11 +24,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     // name of the database file for your application -- change to something appropriate for your app
     private static final String DATABASE_NAME = "gif.db";
     // any time you make changes to your database objects, you may have to increase the database version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 15;
 
     // the DAO object we use to access the Gif table
     private Dao<Gif, Integer> gifDao = null;
     private RuntimeExceptionDao<Gif, Integer> gifRuntimeDao = null;
+    private RuntimeExceptionDao<GifFrame, Integer> gifFrameRuntimeDao = null;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
@@ -42,6 +44,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
             Log.i(DatabaseHelper.class.getName(), "onCreate");
             TableUtils.createTable(connectionSource, Gif.class);
+            TableUtils.createTable(connectionSource, GifFrame.class);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -57,6 +60,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
             Log.i(DatabaseHelper.class.getName(), "onUpgrade");
             TableUtils.dropTable(connectionSource, Gif.class, true);
+            TableUtils.dropTable(connectionSource, GifFrame.class, true);
             // after we drop the old databases, we create the new ones
             onCreate(db, connectionSource);
         } catch (SQLException e) {
@@ -75,7 +79,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
         return gifDao;
     }
-
+    
     /**
      * Returns the RuntimeExceptionDao (Database Access Object) version of a Dao for our Gif class. It will
      * create it or just give the cached value. RuntimeExceptionDao only through RuntimeExceptions.
@@ -93,6 +97,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void close() {
         super.close();
+        gifFrameRuntimeDao = null;
         gifRuntimeDao = null;
+    }
+
+    public RuntimeExceptionDao<GifFrame, Integer> getGifFrameDao() {
+        if (gifFrameRuntimeDao  == null) {
+            gifFrameRuntimeDao = getRuntimeExceptionDao(GifFrame.class);
+        }
+        return gifFrameRuntimeDao;
     }
 }

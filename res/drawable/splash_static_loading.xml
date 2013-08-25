@@ -1,0 +1,12 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:id="@+id/selected_static" android:oneshot="false" >
+    <item android:drawable="@drawable/tv_splash_static_1" android:duration="100"/>
+    <item android:drawable="@drawable/tv_splash_static_2" android:duration="100"/>
+    <item android:drawable="@drawable/tv_splash_static_3" android:duration="100"/>
+    <item android:drawable="@drawable/tv_splash_static_4" android:duration="100"/>
+    <item android:drawable="@drawable/tv_splash_static_5" android:duration="100"/>
+    <item android:drawable="@drawable/tv_splash_static_6" android:duration="100"/>
+    <item android:drawable="@drawable/tv_splash_static_7" android:duration="100"/>
+    <item android:drawable="@drawable/tv_splash_static_8" android:duration="100"/>
+    <item android:drawable="@drawable/tv_splash_static_9" android:duration="100"/>
+</animation-list>

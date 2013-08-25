@@ -4,8 +4,11 @@ package com.kimboo.giffy.views;
 import java.io.InputStream;
 import java.util.Vector;
 
+import com.kimboo.giffy.utils.MyLog;
+
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.util.Log;
 
 public class GifDecoder {
         /**
@@ -22,6 +25,9 @@ public class GifDecoder {
         public static final int STATUS_OPEN_ERROR = 2;
         /** max decoder pixel stack size */
         protected static final int MAX_STACK_SIZE = 4096;
+        
+        private static final String TAG = "GifDecoder";
+        
         protected InputStream in;
         protected int status;
         protected int width; // full image width
@@ -57,9 +63,11 @@ public class GifDecoder {
         protected byte[] pixels;
         protected Vector<GifFrame> frames; // frames read from current file
         protected int frameCount;
-        private boolean resizeIt;
         private int scaleFactorX;
         private int scaleFactorY;
+        protected int skipRate = 0;
+        public int max_width;
+        public int max_height;
         
         private static class GifFrame {
                 public GifFrame(Bitmap im, int del) {
@@ -84,14 +92,6 @@ public class GifDecoder {
                         delay = frames.elementAt(n).delay;
                 }
                 return delay;
-        }
-
-        public boolean isResizeIt() {
-            return resizeIt;
-        }
-
-        public void setResizeIt(boolean resizeIt) {
-            this.resizeIt = resizeIt;
         }
 
         public int getScaleFactorX() {
@@ -155,7 +155,10 @@ public class GifDecoder {
                                 }
                         }
                         if (lastBitmap != null) {
-                                lastBitmap.getPixels(dest, 0, width, 0, 0, width, height);
+                                //TODO: FIX!!!!!!
+                            
+                                lastBitmap.getPixels(dest, 0, lastBitmap.getWidth(), 0, 0,
+                                        lastBitmap.getWidth(), lastBitmap.getHeight());
                                 // copy pixels
                                 if (lastDispose == 2) {
                                         // fill last image rect area with background color
@@ -469,11 +472,19 @@ public class GifDecoder {
         protected void readContents() {
                 // read GIF file content blocks
                 boolean done = false;
+                int counter = 1;
                 while (!(done || err())) {
                         int code = read();
                         switch (code) {
                         case 0x2C: // image separator
-                                readBitmap();
+//                                if ((counter % skipRate) == 0) {
+//                                    MyLog.d(TAG,"Skipping frame");
+//                                    //skip();
+//                                } else {
+                                    MyLog.d(TAG,"Reading bitmap");
+                                    readBitmap();
+//                                }
+                                counter++;
                                 break;
                         case 0x21: // extension
                                 code = read();
@@ -590,11 +601,7 @@ public class GifDecoder {
                 }
                 frameCount++;
                 // create new image to receive frame data
-                if (resizeIt) {
-                    image = Bitmap.createBitmap(width / scaleFactorX, height / scaleFactorY, Config.RGB_565);
-                } else {
-                    image = Bitmap.createBitmap(width, height, Config.RGB_565);
-                }
+                image = Bitmap.createBitmap(width, height, Config.RGB_565);
                 setPixels(); // transfer pixel data to image
                 frames.addElement(new GifFrame(image, delay)); // add image to frame
                 // list
@@ -609,8 +616,16 @@ public class GifDecoder {
          */
         protected void readLSD() {
                 // logical screen size
-                width = readShort();
-                height = readShort();
+                int gif_width = readShort();
+                int gif_height = readShort();
+                if (gif_width > max_width || gif_height > max_height) {
+                    width = max_width;
+                    height = max_height;
+                } else {
+                    width = gif_width;
+                    height = gif_height;
+                }
+                
                 // packed fields
                 int packed = read();
                 gctFlag = (packed & 0x80) != 0; // 1 : global color table flag

@@ -4,13 +4,16 @@ package com.kimboo.giffy.views;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.kimboo.giffy.R;
+import com.kimboo.giffy.utils.DiskLruImageCache;
+
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.widget.ImageView;
 
-import com.kimboo.giffy.R;
 
 public class GifDecoderView extends ImageView {
 
@@ -42,9 +45,16 @@ public class GifDecoderView extends ImageView {
 
     public void playGif(String filepath) {
         setFilepath(filepath);
-        setBackgroundDrawable(getResources().getDrawable(R.drawable.tv_loading));
         new Player().execute(filepath);
     }
+    
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        setBackgroundDrawable(getResources().getDrawable(R.drawable.cine_loading));
+        ((AnimationDrawable)getBackground()).start();
+    }
+    
     
     private InputStream getInputStream(Context context, String filepath) {
         InputStream stream = null;
@@ -62,6 +72,7 @@ public class GifDecoderView extends ImageView {
         protected Void doInBackground(String... params) {
             mGifDecoder = new GifDecoder();
             stream = getInputStream(getContext(), getFilepath());
+            mGifDecoder.skipRate = 4;
             mGifDecoder.read(stream);
             mIsPlayingGif = true;
             return null;

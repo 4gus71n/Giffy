@@ -3,9 +3,11 @@ package com.kimboo.giffy.screens.navigation;
 
 import com.kimboo.giffy.R;
 import com.kimboo.giffy.R.layout;
+import com.kimboo.giffy.utils.DiskLruImageCache;
 import com.kimboo.giffy.views.GifDecoder;
 import com.kimboo.giffy.views.GifDecoderView;
 
+import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.FrameLayout;
@@ -22,7 +24,7 @@ public class NavigationActivity extends FragmentActivity {
         gif.setScaleType(ScaleType.FIT_XY);
         container.addView(gif);
         findViewById(R.id.navigation_main_frame).bringToFront();
-        gif.playGif("fry.gif");
+        gif.playGif("coffee.gif");
         container.requestLayout();
     }
 }

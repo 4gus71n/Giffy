@@ -1,0 +1,19 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:id="@+id/cine_animation" android:oneshot="false" >
+    <item android:drawable="@drawable/cine16" android:duration="100"/>
+    <item android:drawable="@drawable/cine1" android:duration="100"/>
+    <item android:drawable="@drawable/cine2" android:duration="100"/>
+    <item android:drawable="@drawable/cine3" android:duration="100"/>
+    <item android:drawable="@drawable/cine4" android:duration="100"/>
+    <item android:drawable="@drawable/cine5" android:duration="100"/>
+    <item android:drawable="@drawable/cine6" android:duration="100"/>
+    <item android:drawable="@drawable/cine7" android:duration="100"/>
+    <item android:drawable="@drawable/cine8" android:duration="100"/>
+    <item android:drawable="@drawable/cine9" android:duration="100"/>
+    <item android:drawable="@drawable/cine10" android:duration="100"/>
+    <item android:drawable="@drawable/cine11" android:duration="100"/>
+    <item android:drawable="@drawable/cine12" android:duration="100"/>
+    <item android:drawable="@drawable/cine13" android:duration="100"/>
+    <item android:drawable="@drawable/cine14" android:duration="100"/>
+    <item android:drawable="@drawable/cine15" android:duration="100"/>
+</animation-list>

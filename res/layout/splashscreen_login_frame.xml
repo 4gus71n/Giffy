@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/splash_loadin_width"
+    android:layout_height="wrap_content" >
+
+    <com.kimboo.giffy.views.GiffyTextView
+        android:id="@+id/textView1"
+        style="@style/oldTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="29dp"
+        android:text="@string/splash_init_session"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <com.kimboo.giffy.views.GiffyButtonView
+        android:id="@+id/button2"
+        style="@style/oldButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_below="@+id/splash_login_password"
+        android:layout_marginTop="10dp"
+        android:text="@string/splash_init_anonymous_btn" />
+
+    <com.kimboo.giffy.views.GiffyButtonView
+        android:id="@+id/button1"
+        style="@style/oldButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_below="@+id/button2"
+        android:layout_marginTop="10dp"
+        android:text="@string/splash_init_session_btn" />
+
+    <com.kimboo.giffy.views.GiffyEditText
+        android:id="@+id/splash_login_email"
+        android:textSize="30sp"
+        android:textColor="@android:color/white"
+        android:background="@android:color/transparent"
+        android:textColorHint="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="45dp"
+        android:layout_marginRight="45dp"
+        android:layout_below="@+id/textView1"
+        android:ems="10"
+        android:hint="@string/splash_email_hint"
+        android:inputType="textEmailAddress" >
+        <requestFocus />
+    </com.kimboo.giffy.views.GiffyEditText>
+
+    <com.kimboo.giffy.views.GiffyEditText
+        android:id="@+id/splash_login_password"
+        android:textSize="30sp"
+        android:textColor="@android:color/white"
+        android:background="@android:color/transparent"
+        android:textColorHint="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="45dp"
+        android:layout_marginRight="45dp"
+        android:layout_below="@+id/splash_login_email"
+        android:ems="10"
+        android:hint="@string/splash_password_hint"
+        android:inputType="textPassword" >
+    </com.kimboo.giffy.views.GiffyEditText>
+
+</RelativeLayout>

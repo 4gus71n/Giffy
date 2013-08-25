@@ -16,14 +16,14 @@
             android:src="@drawable/tv_large" />
     </FrameLayout>
 
-    <fragment
-        android:id="@+id/fragmentWheel"
-        android:name="com.kimboo.giffy.screens.navigation.DialerFragment"
-        android:layout_width="100dp"
-        android:layout_height="110dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerHorizontal="false"
-        android:layout_marginRight="0dp" />
+<!--     <fragment -->
+<!--         android:id="@+id/fragmentWheel" -->
+<!--         android:name="com.kimboo.giffy.screens.navigation.DialerFragment" -->
+<!--         android:layout_width="100dp" -->
+<!--         android:layout_height="110dp" -->
+<!--         android:layout_alignParentBottom="true" -->
+<!--         android:layout_alignParentRight="true" -->
+<!--         android:layout_centerHorizontal="false" -->
+<!--         android:layout_marginRight="0dp" /> -->
 
 </RelativeLayout>

@@ -1,15 +1,43 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="fill_parent"
     android:background="@drawable/wallpaper1" >
 
-    <ImageView
-        android:id="@+id/splash_animation"
-        android:layout_width="@dimen/splash_loadin_width"
-        android:layout_height="@dimen/splash_loadin_height"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/splash_loading" />
+    <FrameLayout
+        android:id="@+id/splash_frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" >
+
+        <ViewSwitcher
+            android:id="@+id/splash_switcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal" >
+
+            <ImageView
+                android:id="@+id/splash_animation_static"
+                android:layout_width="@dimen/splash_loadin_width"
+                android:layout_height="@dimen/splash_loadin_height"
+                android:background="@drawable/splash_static_loading" />
+
+            <ImageView
+                android:id="@+id/splash_animation"
+                android:layout_width="@dimen/splash_loadin_width"
+                android:layout_height="@dimen/splash_loadin_height"
+                android:background="@drawable/splash_loading" />
+        </ViewSwitcher>
+
+        <ScrollView
+            android:id="@+id/splash_movie_strip"
+            android:layout_width="@dimen/splash_loadin_width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/film_strip_vertical"
+            android:layout_gravity="center_horizontal"
+            android:fillViewport="true" >
+
+            <include layout="@layout/splashscreen_login_frame" />
+        </ScrollView>
+    </FrameLayout>
 
 </RelativeLayout>
