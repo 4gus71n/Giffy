@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.widget.ImageView;
 
 import com.kimboo.giffy.R;
+import com.kimboo.giffy.model.Gif;
 import com.kimboo.giffy.utils.DiskLruImageCache;
 import com.kimboo.giffy.utils.Utils;
 
@@ -46,7 +47,7 @@ public class TinyGifDecoderView extends ImageView {
     }
     
     
-
+    /** Adjust the measured bounds to the bitmap size*/
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -55,8 +56,10 @@ public class TinyGifDecoderView extends ImageView {
         setMeasuredDimension(minimumWidth, minimumHeight);
     }
 
-
-
+    /**
+     * Draws each frame of the bitmap.
+     * @param canvas
+     */
     private void drawFrame(Canvas canvas) {
         switch (who) {
             case 1:
@@ -77,24 +80,20 @@ public class TinyGifDecoderView extends ImageView {
         who++;
     }
 
-    public TinyGifDecoderView(Context context, String filepath, DiskLruImageCache diskCache) {
+    public TinyGifDecoderView(Context context, Gif model, DiskLruImageCache diskCache) {
         super(context);
         setDiskCache(diskCache);
         //Set the animation drawable
         setBackgroundDrawable(getResources().getDrawable(R.drawable.tv_loading));
-        new LoadGif().execute(filepath);
+        new LoadGif().execute(model);
     }
     
-    class LoadGif extends AsyncTask<String, Void, Void> {
+    class LoadGif extends AsyncTask<Gif, Void, Void> {
         @Override
-        protected Void doInBackground(String... params) {
-            if (diskCache.containsKey(Utils.makeKey("tv_template1"))) {
-                _template = diskCache.getBitmap(Utils.makeKey("tv_template1"));
-            } else {
-                _template = BitmapFactory.decodeResource(getResources(), R.drawable.tv);
-                diskCache.put(Utils.makeKey("tv_template1"), _template);
-            }
-            final String filepath = params[0];
+        protected Void doInBackground(Gif... params) {
+            _template = getTvTemplate(diskCache);
+            final Gif currGif = params[0];
+            final String filepath = currGif.getFilename();
             final String frame1 = Utils.makeKey(filepath+"_frame_1");
             final String frame2 = Utils.makeKey(filepath+"_frame_2");
             final String frame3 = Utils.makeKey(filepath+"_frame_3");
@@ -212,6 +211,23 @@ public class TinyGifDecoderView extends ImageView {
 
     public void setDiskCache(DiskLruImageCache diskCache) {
         this.diskCache = diskCache;
+    }
+
+
+    /**
+     * If the tv template is in the cache then returns it. Othewise decode it, and return it.
+     * @param diskCache
+     * @return A bitmap
+     */
+    private Bitmap getTvTemplate(DiskLruImageCache diskCache) {
+        Bitmap _template;
+        if (diskCache.containsKey(Utils.makeKey("tv_template1"))) {
+            _template = diskCache.getBitmap(Utils.makeKey("tv_template1"));
+        } else {
+            _template = BitmapFactory.decodeResource(getResources(), R.drawable.tv);
+            diskCache.put(Utils.makeKey("tv_template1"), _template);
+        }
+        return _template;
     }
 
 }

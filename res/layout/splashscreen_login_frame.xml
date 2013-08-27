@@ -15,7 +15,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <com.kimboo.giffy.views.GiffyButtonView
-        android:id="@+id/button2"
+        android:id="@+id/splash_init_anonymous_btn"
         style="@style/oldButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,13 +26,13 @@
         android:text="@string/splash_init_anonymous_btn" />
 
     <com.kimboo.giffy.views.GiffyButtonView
-        android:id="@+id/button1"
+        android:id="@+id/splash_init_session_btn"
         style="@style/oldButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
         android:layout_alignRight="@+id/textView1"
-        android:layout_below="@+id/button2"
+        android:layout_below="@+id/splash_init_anonymous_btn"
         android:layout_marginTop="10dp"
         android:text="@string/splash_init_session_btn" />
 

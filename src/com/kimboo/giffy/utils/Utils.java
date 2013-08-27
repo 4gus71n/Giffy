@@ -1,6 +1,7 @@
 package com.kimboo.giffy.utils;
 
 import java.io.File;
+import java.net.URI;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -24,6 +25,7 @@ public class Utils {
         return original.replace(".", "_");
     }
 
+    @SuppressLint("NewApi")
     public static File getExternalCacheDir(Context context) {
         if (hasExternalCacheDir()) {
             return context.getExternalCacheDir();
@@ -36,6 +38,10 @@ public class Utils {
 
     public static boolean hasExternalCacheDir() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO;
+    }
+
+    public static String getRestResource(String string) {
+        return Constants.Server.REST_HOSTNAME+string;
     }
 
 }

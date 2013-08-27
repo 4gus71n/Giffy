@@ -2,148 +2,128 @@
 package com.kimboo.giffy;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.GridView;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.kimboo.giffy.db.DatabaseHelper;
 import com.kimboo.giffy.model.Gif;
+import com.kimboo.giffy.receivers.ServerUpdateReceiver;
+import com.kimboo.giffy.services.GifManagerService;
+import com.kimboo.giffy.services.GifManagerService.LocalBinder;
+import com.kimboo.giffy.utils.Constants;
+import com.kimboo.giffy.utils.DaoAdapter;
 import com.kimboo.giffy.utils.DiskLruImageCache;
+import com.kimboo.giffy.views.TinyGifDecoderView;
 
 public class MainActivity extends Activity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private DatabaseHelper databaseHelper = null;
+    /** Service stuff*/
+    private GifManagerService mService;
+    private boolean mBound = false;
+    
+    /** UI stuff*/
+    private GridView gifGrid;
 
-    private DiskLruImageCache diskCache;
-
+    /** Receivers */
+    private ServerUpdateReceiver serviceUpdatesCallback = new ServerUpdateReceiver() {
+        
+        @Override
+        public void onNewGifsAdded() {
+            Log.d(TAG, "The service has bring some new gifs!");
+            refreshGridView();
+        }
+        
+        @Override
+        public void onGifUpdateFailed() {
+            Log.d(TAG, "Some error has happened in the service");
+        }
+    };
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG,"Loding...");
-        diskCache = new DiskLruImageCache(this, "cache", 1024 * 1024 * 30, CompressFormat.PNG, 70);
+        //diskCache = new DiskLruImageCache(this, "cache", 1024 * 1024 * 30, CompressFormat.PNG, 70);
         setContentView(R.layout.activity_main);
-        doSampleDatabaseStuff();
-        GridView gifGrid = (GridView) findViewById(R.id.main_gridview);
-      //  gifGrid.setAdapter(new GifGridAdapter(this, getHelper().getGifDao()));
+        gifGrid = (GridView) findViewById(R.id.main_gridview);
+    }
+    
+    protected void refreshGridView() {
+        //CONTINUE HERE!
+        //gifGrid.setAdapter(new GifGridAdapter(this, getHelper().getGifDao()));
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        /*
-         * You'll need this in your class to release the helper when done.
-         */
-        if (databaseHelper != null) {
-            OpenHelperManager.releaseHelper();
-            databaseHelper = null;
-        }
-        diskCache.close();
+    protected void onStart() {
+        super.onStart();
+        // Bind to LocalService
+        Intent intent = new Intent(this, GifManagerService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        // Register receiver
+        registerReceiver(serviceUpdatesCallback, 
+                new IntentFilter(Constants.Service.ServerUpdateReceiver.GIF_UPDATE_FAILED));
+        registerReceiver(serviceUpdatesCallback, 
+                new IntentFilter(Constants.Service.ServerUpdateReceiver.NEW_GIFS_INCOMING));
     }
 
-    /**
-     * You'll need this in your class to get the helper from the manager once
-     * per class.
-     */
-    private DatabaseHelper getHelper() {
-        if (databaseHelper == null) {
-            databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Unbind from the service
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
         }
-        return databaseHelper;
+        unregisterReceiver(serviceUpdatesCallback);
     }
 
-    
-    /**
-     * TODO: DELETE
-     */
-    protected void doSampleDatabaseStuff() {
-        Gif simple = new Gif();
-//        simple.setHash("party.gif");
-//        getHelper().getGifDao().create(simple);
-//        simple.setHash("goten.gif");
-//        getHelper().getGifDao().create(simple);
-//        simple.setHash("wonka.gif");
-//        getHelper().getGifDao().create(simple);
-//        simple.setHash("tape.gif");
-//        getHelper().getGifDao().create(simple);
-//        simple.setHash("redball.gif");
-//        getHelper().getGifDao().create(simple);
-//        simple.setHash("sixpack.gif");
-//        getHelper().getGifDao().create(simple);
-//        simple.setHash("coffee.gif");
-//        getHelper().getGifDao().create(simple);
-//        simple.setHash("fry.gif");
-//        getHelper().getGifDao().create(simple);
-//        simple.setHash("chipmunk.gif");
-//        getHelper().getGifDao().create(simple);
-//        simple.setHash("pie.gif");
-//        getHelper().getGifDao().create(simple);
-        
-    }
-//
-//    class GifGridAdapter extends DaoAdapter<Gif> {
-//        public GifGridAdapter(Context context, RuntimeExceptionDao<Gif, Integer> dao) {
-//            super(context, dao);
-//        }
-//
-//        @Override
-//        public View getView(Gif model, View convertView, ViewGroup parent) {
-//            TinyGifDecoderView view = new TinyGifDecoderView(getContext(), model.getHash(), diskCache);
+    /** Defines callbacks for service binding, passed to bindService() */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            LocalBinder binder = (LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+            mService.updateGifs();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
+    class GifGridAdapter extends DaoAdapter<Gif> {
+        public GifGridAdapter(Context context, RuntimeExceptionDao<Gif, Integer> dao) {
+            super(context, dao);
+        }
+
+        @Override
+        public View getView(Gif model, View convertView, ViewGroup parent) {
+            //TinyGifDecoderView view = new TinyGifDecoderView(getContext(), model, diskCache);
 //            view.setScaleType(TinyGifDecoderView.ScaleType.FIT_XY);
 //            //TODO: Improve
 //            view.setLayoutParams(new GridView.LayoutParams(150, 100));
 //            view.setPadding(0, 0, 0, 0);
 //            return view;
-//        }
-//
-//    }
-//
-//    abstract class DaoAdapter<T extends Model> extends
-//            BaseAdapter {
-//        RuntimeExceptionDao<T, Integer> dao;
-//        Context context;
-//
-//        public DaoAdapter(Context context, RuntimeExceptionDao<T, Integer> dao) {
-//            setContext(context);
-//            setDao(dao);
-//        }
-//
-//        private void setDao(RuntimeExceptionDao<T, Integer> dao) {
-//            this.dao = dao;
-//        }
-//
-//        public void setContext(Context context) {
-//            this.context = context;
-//        }
-//
-//        public Context getContext() {
-//            return this.context;
-//        }
-//        
-//        @Override
-//        public int getCount() {
-//            return dao.queryForAll().size();
-//        }
-//
-//        @Override
-//        public Object getItem(int arg0) {
-//            return dao.queryForAll().get(arg0);
-//        }
-//
-//        @Override
-//        public long getItemId(int arg0) {
-//            return dao.queryForAll().get(arg0).getId();
-//        }
-//
-//        @Override
-//        public View getView(int arg0, View arg1, ViewGroup arg2) {
-//            Log.d(TAG,"Loading item:"+arg0);
-//            return getView(dao.queryForAll().get(arg0), arg1, arg2);
-//        }
-//
-//        public abstract View getView(T model, View convertView, ViewGroup parent);
-//    }
+            return null;
+        }
+
+    }
 }
